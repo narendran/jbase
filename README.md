@@ -1,7 +1,7 @@
 jbase
 =====
 
-A simple in-memory database written in Java with transactional properties.
+A simple in-memory database with transactional properties written in Java.
 
 How to execute :
 ================

@@ -7,7 +7,7 @@ public class Transaction {
 	Map<String,String> transValues = null;
 
 	public Transaction(Map<String,String> prevTransValues){
-		if(transValues==null)
+		if(prevTransValues==null)
 			transValues = new HashMap<String,String>();
 		else 
 			transValues = new HashMap<String,String>(prevTransValues); // Unless cloned, a change made to transaction will be reflected in all previous transactions. 

@@ -31,6 +31,7 @@ public class TransactionManager {
 	}
 	
 	public void commit(){
+		// TODO : Handle NULL
 		Map<String,String> temp = this.getLastTransaction().getTransValues();
 		for(Entry<String,String> entry : temp.entrySet()){
 			if(entry.getValue().equals("None")){
@@ -44,17 +45,27 @@ public class TransactionManager {
 	public void createTransaction(){
 		if(transactions==null){
 			transactions = new Stack<Transaction>();
-			transactions.push(new Transaction(null)); // First level, no context to be passed.
 		}
 		// Get context from previous transaction and pass it to the new one.
-		transactions.push(new Transaction(this.getLastTransaction().getTransValues()));
+		//System.out.println("Is there a previous trasn : "+this.getLastTransaction()==null);
+		if(this.getLastTransaction()!=null){
+			//System.out.println("*** Creating new transaction ***");
+			transactions.push(new Transaction(this.getLastTransaction().getTransValues()));
+		}
+		else
+			transactions.push(new Transaction(null));
 	}
 	
 	public Transaction getLastTransaction(){
+		// System.out.println("Number of transactions : "+transactions.size());
+		Transaction trans = null;
 		if(transactions==null || transactions.empty()){
 			return null;
 		}
-		return transactions.peek();
+		if(transactions.size()!=0){
+			trans = transactions.peek();
+		}
+		return trans;
 	}
 	
 	/**
@@ -78,7 +89,7 @@ public class TransactionManager {
 	 */
 	public String getValue(String key){
 		if(this.getLastTransaction()!=null){
-			if(this.getLastTransaction().getTransValues().get(key)==null)
+			if(this.getLastTransaction().getTransValues()==null || this.getLastTransaction().getTransValues().get(key)==null)
 				return JBase.getInstance().getKvstore().get(key); // return value from original KVStore
 			else if(this.getLastTransaction().getTransValues().get(key).equals("None"))
 					return null; // The value has been set to null
